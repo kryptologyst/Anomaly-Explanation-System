@@ -1,0 +1,80 @@
+# Default configuration for Anomaly Explanation System
+defaults:
+  - _self_
+  - override /data: iris
+  - override /model: autoencoder
+  - override /explainer: shap
+  - override /evaluation: default
+
+# Global settings
+seed: 42
+device: auto  # auto, cpu, cuda, mps
+log_level: INFO
+
+# Data configuration
+data:
+  name: iris
+  path: data/raw/
+  test_size: 0.3
+  validation_size: 0.2
+  random_state: 42
+  normalize: true
+  standardize: true
+
+# Model configuration
+model:
+  name: autoencoder
+  input_dim: 4
+  hidden_dims: [64, 32, 16]
+  activation: relu
+  output_activation: sigmoid
+  learning_rate: 0.001
+  batch_size: 16
+  epochs: 100
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+  optimizer: adam
+  loss: mse
+
+# Anomaly detection configuration
+anomaly:
+  threshold_method: percentile  # percentile, iqr, statistical
+  threshold_value: 95.0  # percentile for percentile method
+  contamination: 0.1  # expected fraction of anomalies
+
+# Explanation configuration
+explainer:
+  name: shap
+  method: kernel  # kernel, tree, deep, linear
+  background_samples: 100
+  max_samples: 1000
+  feature_names: ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - faithfulness
+    - stability
+    - utility
+  cross_validation:
+    enabled: true
+    folds: 5
+  stability_tests:
+    enabled: true
+    num_runs: 10
+
+# Visualization configuration
+visualization:
+  figure_size: [10, 6]
+  dpi: 300
+  style: seaborn-v0_8
+  save_format: png
+  output_dir: assets/
+
+# Demo configuration
+demo:
+  title: "Anomaly Explanation System"
+  description: "Interactive demo for anomaly detection and explanation"
+  port: 8501
+  host: localhost
